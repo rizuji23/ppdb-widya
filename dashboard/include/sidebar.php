@@ -38,7 +38,7 @@
         <span class="hide-menu">PENGATURAN</span>
     </li>
     <li class="sidebar-item">
-        <a class="sidebar-link" href="./icon-tabler.php" aria-expanded="false">
+        <a class="sidebar-link" href="./biodata.php" aria-expanded="false">
             <span>
                 <i class="ti ti-mood-happy"></i>
             </span>

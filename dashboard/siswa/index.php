@@ -5,7 +5,7 @@ $check_biodata = check_biodata($_SESSION['id_siswa']);
 if (!$check_biodata) {
 ?>
     <div class="alert alert-danger">
-        <span>Silahkan lengkapi biodata siswa <a href="#">Klik disini</a>.</span>
+        <span>Silahkan lengkapi biodata siswa <a href="biodata.php">Klik disini</a>.</span>
     </div>
 <?php
 }
@@ -56,7 +56,7 @@ if (!$check_biodata) {
                     </div>
 
                 </div>
-                <a href="#" class="btn btn-primary float-end mt-0 btn-sm">Ganti Biodata</a>
+                <a href="biodata.php" class="btn btn-primary float-end mt-0 btn-sm">Ganti Biodata</a>
             </div>
         </div>
     </div>
