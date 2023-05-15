@@ -16,7 +16,7 @@
         <span class="hide-menu">Data</span>
     </li>
     <li class="sidebar-item">
-        <a class="sidebar-link" href="./ui-buttons.php" aria-expanded="false">
+        <a class="sidebar-link" href="seleksi.php" aria-expanded="false">
             <span>
                 <i class="ti ti-article"></i>
             </span>
@@ -25,7 +25,7 @@
     </li>
 
     <li class="sidebar-item">
-        <a class="sidebar-link" href="./authentication-login.php" aria-expanded="false">
+        <a class="sidebar-link" href="list_pembayaran.php" aria-expanded="false">
             <span>
                 <i class="ti ti-login"></i>
             </span>

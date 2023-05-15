@@ -15,8 +15,10 @@
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
-
-                        <img src="assets/images/user.jpg" alt="" width="35" height="35" class="rounded-circle"> &nbsp;
+                        <?php
+                        $file = get_file($_SESSION['id_siswa']);
+                        ?>
+                        <img src="./media/<?= $file['foto_pas'] ?>" alt="" width="35" height="35" class="rounded-circle"> &nbsp;
                         <?php
                         $user = get_user($_SESSION['username'], $_SESSION['level']);
                         echo $user['nama'];

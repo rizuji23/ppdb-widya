@@ -93,9 +93,9 @@ function check_biodata($id_siswa)
     $c = mysqli_num_rows($check);
 
     if ($c != 0) {
-        return false;
-    } else {
         return true;
+    } else {
+        return false;
     }
 }
 
@@ -112,5 +112,182 @@ function get_biodata($id_siswa)
         return $bo;
     } else {
         return false;
+    }
+}
+
+function get_file($id_siswa)
+{
+    global $connect;
+    $biodata = mysqli_query($connect, "SELECT * FROM file_siswa WHERE id_siswa = '$id_siswa'");
+    $c = mysqli_num_rows($biodata);
+
+    if ($c != 0) {
+        $bo = mysqli_fetch_assoc($biodata);
+        return $bo;
+    } else {
+        return false;
+    }
+}
+
+function check_seleksi($id_siswa)
+{
+    global $connect;
+    $seleksi = mysqli_query($connect, "SELECT * FROM seleksi WHERE id_siswa = '$id_siswa'");
+    $s = mysqli_num_rows($seleksi);
+
+
+    if ($s != 0) {
+        $se = mysqli_fetch_assoc($seleksi);
+        return $se;
+    } else {
+        return false;
+    }
+}
+
+function get_count_pembayaran($id_siswa)
+{
+    global $connect;
+    if ($id_siswa != "all") {
+        $get = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran WHERE id_siswa = '$id_siswa'");
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    } else {
+        $get = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran");
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    }
+}
+
+function get_pembayaran($id_siswa)
+{
+    global $connect;
+    if ($id_siswa != "all") {
+        $get = mysqli_query($connect, "SELECT * FROM pembayaran WHERE id_siswa = '$id_siswa'");
+        return $get;
+    } else {
+        $get = mysqli_query($connect, "SELECT * FROM pembayaran");
+        return $get;
+    }
+}
+
+function get_limit_pembayaran($id_siswa)
+{
+    global $connect;
+    if ($id_siswa != "all") {
+        $get = mysqli_query($connect, "SELECT * FROM pembayaran WHERE id_siswa = '$id_siswa' ORDER BY id LIMIT 5");
+        return $get;
+    } else {
+        $get = mysqli_query($connect, "SELECT * FROM pembayaran ORDER BY id LIMIT 5");
+        return $get;
+    }
+}
+
+function get_selected_pembayaran($id_pembayaran)
+{
+    global $connect;
+    $get = mysqli_query($connect, "SELECT * FROM pembayaran INNER JOIN user_siswa ON pembayaran.id_siswa = user_siswa.id_siswa WHERE pembayaran.id_pembayaran = '$id_pembayaran'");
+    $g = mysqli_fetch_assoc($get);
+
+    return $g;
+}
+
+function save_pembayaran($data, $id_siswa)
+{
+    global $connect;
+
+    $jumlah_bayar = htmlspecialchars($data['jumlah_bayar']);
+    $bukti_bayar = $_FILES['bukti_bayar'];
+    $dirupload = '../dashboard/media/';
+    $id_pembayaran = uniqid();
+    $date = date('Y-m-d');
+
+    $upload_bukti = move_uploaded_file($bukti_bayar['tmp_name'], $dirupload . uniqid() . "bukti_bayar" . $bukti_bayar['name']);
+
+    if ($upload_bukti) {
+        $save = mysqli_query($connect, "INSERT INTO pembayaran VALUES(NULL, '$id_pembayaran', '$id_siswa', '$jumlah_bayar', '" . $bukti_bayar['name'] . "', '$date')");
+
+        if ($save) {
+            redirect_msg("list_pembayaran.php", "Berhasil Disimpan");
+        } else {
+            redirect_msg("tambah_pembayaran.php", "Gagal disimpan!");
+        }
+    }
+}
+
+function save_bodata($data, $id_siswa)
+{
+    global $connect;
+
+    $nama_siswa = htmlspecialchars($data['nama_siswa']);
+    $tempat = htmlspecialchars($data['tempat']);
+    $tanggal_lahir = htmlspecialchars($data['tanggal_lahir']);
+    $jk = htmlspecialchars($data['jk']);
+    $agama = htmlspecialchars($data['agama']);
+    $alamat_sekarang = htmlspecialchars($data['alamat_sekarang']);
+    $nisn = htmlspecialchars($data['nisn']);
+    $alamat_sekolah_asal = htmlspecialchars($data['alamat_sekolah_asal']);
+    $nomer_peserta_ujian = htmlspecialchars($data['nomer_peserta_ujian']);
+    $nomer_sttb = htmlspecialchars($data['nomer_sttb']);
+    $nomer_skhun = htmlspecialchars($data['nomor_skhun']);
+    $jumlah_sttb = htmlspecialchars($data['jumlah_sttb']);
+
+    $nama_ibu = htmlspecialchars($data['nama_ibu']);
+    $tempat_ibu = htmlspecialchars($data['tempat_ibu']);
+    $tanggal_lahir_ibu = htmlspecialchars($data['tanggal_lahir_ibu']);
+    $agama_ibu = htmlspecialchars($data['agama_ibu']);
+    $pekerjaan_ibu = htmlspecialchars($data['pekerjaan_ibu']);
+
+    $nama_ayah = htmlspecialchars($data['nama_ayah']);
+    $tempat_ayah = htmlspecialchars($data['tempat_ayah']);
+    $tanggal_lahir_ayah = htmlspecialchars($data['tanggal_lahir_ayah']);
+    $agama_ayah = htmlspecialchars($data['agama_ayah']);
+    $pekerjaan_ayah = htmlspecialchars($data['pekerjaan_ayah']);
+
+    $no_telp = htmlspecialchars($data['no_telp']);
+    $no_telp_darurat = htmlspecialchars($data['no_telp_darurat']);
+
+    $foto_surat_kelulusan = $_FILES['foto_surat_kelulusan'];
+    $foto_surat_kelakuan = $_FILES['foto_surat_kelakuan'];
+    $foto_pas = $_FILES['foto_pas'];
+    $foto_akta = $_FILES['foto_akta'];
+    $foto_kk = $_FILES['foto_kk'];
+    $foto_ktp = $_FILES['foto_ktp'];
+    $foto_ijazah = $_FILES['foto_ijazah'];
+    $foto_skhun = $_FILES['foto_skhun'];
+    $foto_kip = $_FILES['foto_kip'];
+
+    $id_daftar = uniqid();
+    $tanggal_daftar = date('Y-m-d');
+    $tahun_ajaran = date('Y');
+    $ttl = $tempat . " " . $tanggal_lahir;
+    $ttl_ayah = $tempat_ayah . " " . $tanggal_lahir_ayah;
+    $ttl_ibu = $tempat_ibu . " " . $tanggal_lahir_ibu;
+
+    #save biodata first
+
+    $save_biodata = mysqli_query($connect, "INSERT INTO biodata_siswa VALUES(NULL, '$id_siswa', '$id_daftar', '$tanggal_daftar', '$tahun_ajaran', '$nama_siswa', '$jk', '$ttl', '$agama', '$alamat_sekarang', '$alamat_sekolah_asal', '$nisn', '$nomer_peserta_ujian', '$nomer_sttb', '$nomer_skhun', '$jumlah_sttb', '$nama_ayah', '$ttl_ayah', '$agama_ayah', '$pekerjaan_ayah', '$nama_ibu', '$ttl_ibu', '$agama_ibu', '$pekerjaan_ibu', '$no_telp', '$no_telp_darurat')");
+
+    if ($save_biodata) {
+        # save all file
+        # all name
+        $dirupload = '../dashboard/media/';
+        $upload_kelulusan = move_uploaded_file($foto_surat_kelulusan['tmp_name'], $dirupload . uniqid() . $foto_surat_kelulusan['name']);
+        $upload_kelakuan = move_uploaded_file($foto_surat_kelakuan['tmp_name'], $dirupload . uniqid() . $foto_surat_kelakuan['name']);
+        $upload_pas = move_uploaded_file($foto_pas['tmp_name'], $dirupload . uniqid() . $foto_pas['name']);
+        $upload_akta = move_uploaded_file($foto_akta['tmp_name'], $dirupload . uniqid() . $foto_akta['name']);
+        $upload_kk = move_uploaded_file($foto_kk['tmp_name'], $dirupload . uniqid() . $foto_kk['name']);
+        $upload_ktp = move_uploaded_file($foto_ktp['tmp_name'], $dirupload . uniqid() . $foto_ktp['name']);
+        $upload_ijazah = move_uploaded_file($foto_ijazah['tmp_name'], $dirupload . uniqid() . $foto_ijazah['name']);
+        $upload_skhun = move_uploaded_file($foto_skhun['tmp_name'], $dirupload . uniqid() . $foto_skhun['name']);
+        $upload_kip = move_uploaded_file($foto_kip['tmp_name'], $dirupload . uniqid() . $foto_kip['name']);
+
+        # save to database
+        $save_file = mysqli_query($connect, "INSERT INTO file_siswa VALUES(NULL, '$id_siswa', '" . $foto_surat_kelulusan['name'] . "', '" . $foto_surat_kelakuan['name'] . "', '" . $foto_pas['name'] . "', '" . $foto_akta['name'] . "', '" . $foto_kk['name'] . "', '" . $foto_ktp['name'] . "', '" . $foto_ijazah['name'] . "', '" . $foto_skhun['name'] . "', '" . $foto_kip['name'] . "')");
+
+        if ($save_file) {
+            redirect_msg("index.php", "Berhasil Disimpan");
+        } else {
+            redirect_msg("biodata.php", "Gagal disimpan!");
+        }
     }
 }
