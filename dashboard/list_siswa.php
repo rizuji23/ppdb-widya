@@ -43,67 +43,44 @@ if (empty($_SESSION['username'])) {
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-sm">
-                                <h5 class="card-title fw-semibold mb-4">List Pembayaran Siswa</h5>
+                                <h5 class="card-title fw-semibold mb-4">List Siswa</h5>
                             </div>
-                            <?php
 
-                            if ($_SESSION['level'] == 3) {
-                            ?>
-                                <div class="col-sm text-end">
-                                    <a href="tambah_pembayaran.php" class="btn btn-primary">Tambah Pembayaran Baru</a>
-                                </div>
-                            <?php
-                            }
-
-                            ?>
                         </div>
 
                         <table id="example" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>ID Pembayaran</th>
-                                    <?php
-                                    if ($_SESSION['level'] != 3) {
-                                    ?>
-                                        <th>Nama Siswa</th>
-                                    <?php
-                                    }
-                                    ?>
-                                    <th>Jumlah Bayar</th>
+                                    <th>ID Siswa</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Asal Sekolah</th>
                                     <th>Tanggal</th>
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                if ($_SESSION['level'] == 3) {
-                                    $get_seleksi = get_pembayaran($_SESSION['id_siswa']);
-                                } else {
-                                    $get_seleksi = get_pembayaran('all');
-                                }
+
+                                $get_seleksi = get_seleksi_all();
                                 $no = 1;
                                 foreach ($get_seleksi as $gs) {
 
                                 ?>
                                     <tr>
                                         <td><?= $no++; ?></td>
-                                        <td><?= $gs['id_pembayaran'] ?></td>
-                                        <?php
-                                        if ($_SESSION['level'] != 3) {
-                                        ?>
-                                            <td><?= $gs['nama'] ?></td>
-                                        <?php
-                                        }
-                                        ?>
-                                        <td><?= rupiah($gs['jumlah_bayar']) ?></td>
+                                        <td><?= $gs['id_siswa'] ?></td>
+                                        <td><?= $gs['nama'] ?></td>
+                                        <td><?= $gs['asal_sekolah'] ?></td>
                                         <td><?= $gs['created_at'] ?></td>
                                         <td>
-                                            <a class="btn btn-info btn-sm" href="detail_pembayaran.php?id_pembayaran=<?php echo $gs['id_pembayaran'] ?>">Detail</a>
+                                            <a class="btn btn-info btn-sm" href="detail_siswa.php?id_siswa=<?php echo $gs['id_siswa'] ?>">Detail</a>
                                             <?php
 
                                             if ($_SESSION['level'] !== 3) {
                                             ?>
+                                                <button class="btn btn-success btn-sm">Edit</button>
+
                                                 <button class="btn btn-danger btn-sm">Delete</button>
                                             <?php
                                             }

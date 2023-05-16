@@ -45,28 +45,26 @@ function login($data)
             $_SESSION['id_siswa'] = $cs['id_siswa'];
 
             redirect_msg("dashboard/index.php", "Selamat Datang");
-        } else {
-            # check petugas
-            $check_petugas = mysqli_query($connect, "SELECT * FROM petugas WHERE username = '$username' AND password = '$password'");
-            $cp = mysqli_fetch_assoc($check_petugas);
-            $nums = mysqli_num_rows($check_petugas);
+        }
+    } else {
+        # check petugas
+        $check_petugas = mysqli_query($connect, "SELECT * FROM petugas WHERE username = '$username' AND password = '$password'");
+        $cp = mysqli_fetch_assoc($check_petugas);
+        $nums = mysqli_num_rows($check_petugas);
 
-            if ($nums != 0) {
-                if ($cp['username'] == $username && $cp['password'] == $password) {
-                    $_SESSION['username'] = $username;
-                    $_SESSION['level'] = $cs['level'];
-                    $_SESSION['id_siswa'] = $cs['id_siswa'];
+        if ($nums != 0) {
+            if ($cp['username'] == $username && $cp['password'] == $password) {
+                $_SESSION['username'] = $username;
+                $_SESSION['level'] = $cp['level_akses'];
+                $_SESSION['id_siswa'] = "";
 
-                    redirect_msg("dashboard/index.php", "Selamat Datang");
-                } else {
-                    redirect_msg("login.php", "Username atau Password salah!!");
-                }
+                redirect_msg("dashboard/index.php", "Selamat Datang Petugas");
             } else {
                 redirect_msg("login.php", "Username atau Password salah!!");
             }
+        } else {
+            redirect_msg("login.php", "Username atau Password salah!!");
         }
-    } else {
-        redirect_msg("login.php", "Username atau Password salah!!");
     }
 }
 
@@ -165,7 +163,7 @@ function get_pembayaran($id_siswa)
         $get = mysqli_query($connect, "SELECT * FROM pembayaran WHERE id_siswa = '$id_siswa'");
         return $get;
     } else {
-        $get = mysqli_query($connect, "SELECT * FROM pembayaran");
+        $get = mysqli_query($connect, "SELECT * FROM pembayaran INNER JOIN user_siswa ON pembayaran.id_siswa = user_siswa.id_siswa");
         return $get;
     }
 }
@@ -177,7 +175,7 @@ function get_limit_pembayaran($id_siswa)
         $get = mysqli_query($connect, "SELECT * FROM pembayaran WHERE id_siswa = '$id_siswa' ORDER BY id LIMIT 5");
         return $get;
     } else {
-        $get = mysqli_query($connect, "SELECT * FROM pembayaran ORDER BY id LIMIT 5");
+        $get = mysqli_query($connect, "SELECT * FROM pembayaran INNER JOIN user_siswa ON pembayaran.id_siswa = user_siswa.id_siswa ORDER BY pembayaran.id LIMIT 5");
         return $get;
     }
 }
@@ -186,6 +184,40 @@ function get_selected_pembayaran($id_pembayaran)
 {
     global $connect;
     $get = mysqli_query($connect, "SELECT * FROM pembayaran INNER JOIN user_siswa ON pembayaran.id_siswa = user_siswa.id_siswa WHERE pembayaran.id_pembayaran = '$id_pembayaran'");
+    $g = mysqli_fetch_assoc($get);
+
+    return $g;
+}
+
+function get_seleksi_count($status)
+{
+    global $connect;
+
+    if ($status == 'lulus') {
+        $get = mysqli_query($connect, "SELECT COUNT(id) as count FROM seleksi WHERE status = 'Lulus'");
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    } else {
+        $get = mysqli_query($connect, "SELECT COUNT(id) as count FROM seleksi WHERE status = 'Tidak Lulus'");
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    }
+}
+
+function get_seleksi_all()
+{
+    global $connect;
+
+    $get_all = mysqli_query($connect, "SELECT * FROM seleksi INNER JOIN user_siswa ON seleksi.id_siswa = user_siswa.id_siswa ORDER BY seleksi.id DESC");
+    return $get_all;
+}
+
+function get_siswa_detail($id_siswa)
+{
+    global $connect;
+
+    $get = mysqli_query($connect, "SELECT * FROM user_siswa INNER JOIN biodata_siswa ON user_siswa.id_siswa = biodata_siswa.id_siswa INNER JOIN pembayaran ON user_siswa.id_siswa = pembayaran.id_siswa INNER JOIN seleksi ON user_siswa.id_siswa = seleksi.id_siswa INNER JOIN file_siswa ON user_siswa.id_siswa = file_siswa.id_siswa WHERE user_siswa.id_siswa = '$id_siswa'");
+
     $g = mysqli_fetch_assoc($get);
 
     return $g;
@@ -212,6 +244,16 @@ function save_pembayaran($data, $id_siswa)
             redirect_msg("tambah_pembayaran.php", "Gagal disimpan!");
         }
     }
+}
+
+function get_count_siswa()
+{
+    global $connect;
+
+    $get_siswa = mysqli_query($connect, "SELECT COUNT(id) as count FROM user_siswa");
+    $gs = mysqli_fetch_assoc($get_siswa);
+
+    return $gs;
 }
 
 function save_bodata($data, $id_siswa)

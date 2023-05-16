@@ -27,28 +27,23 @@ if (empty($_SESSION['username'])) {
 
     <?php
 
-    include 'include/sidebar_core.php';
+    include './include/sidebar_core.php';
 
     ?>
     <!--  Sidebar End -->
     <!--  Main wrapper -->
     <div class="body-wrapper">
       <!--  Header Start -->
-      <?php if ($_SESSION['level'] == 3) {
-        include 'include/navbar.php';
-      } else if ($_SESSION['level'] == 2) {
-        include 'include/navbar_petugas.php';
-      } else if ($_SESSION['level'] == 1) {
-        include 'include/navbar_admin.php';
-      } ?>
+      <?php include './include/navbar.php'; ?>
 
       <!--  Header End -->
       <div class="container-fluid">
         <!--  Row 1 -->
+
         <?php if ($_SESSION['level'] == 3) {
           include 'siswa/index.php';
         } else if ($_SESSION['level'] == 2) {
-          include 'include/navbar_petugas.php';
+          include 'petugas/index.php';
         } else if ($_SESSION['level'] == 1) {
           include 'include/navbar_admin.php';
         } ?>

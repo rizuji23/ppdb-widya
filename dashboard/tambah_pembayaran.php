@@ -34,13 +34,7 @@ if (empty($_SESSION['username'])) {
         <!--  Main wrapper -->
         <div class="body-wrapper">
             <!--  Header Start -->
-            <?php if ($_SESSION['level'] == 3) {
-                include 'include/navbar.php';
-            } else if ($_SESSION['level'] == 2) {
-                include 'include/navbar_petugas.php';
-            } else if ($_SESSION['level'] == 1) {
-                include 'include/navbar_admin.php';
-            } ?>
+            <?php include './include/navbar.php'; ?>
 
             <!--  Header End -->
             <div class="container-fluid">
