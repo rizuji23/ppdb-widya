@@ -252,13 +252,6 @@ if (empty($_SESSION['username']) && $_SESSION['level'] == 2 || $_SESSION['level'
                                         <tr>
                                             <th>No</th>
                                             <th>ID Pembayaran</th>
-                                            <?php
-                                            if ($_SESSION['level'] != 3) {
-                                            ?>
-                                                <th>Nama Siswa</th>
-                                            <?php
-                                            }
-                                            ?>
                                             <th>Jumlah Bayar</th>
                                             <th>Tanggal</th>
                                             <th>Opsi</th>
@@ -276,7 +269,6 @@ if (empty($_SESSION['username']) && $_SESSION['level'] == 2 || $_SESSION['level'
                                             <tr>
                                                 <td><?= $no++; ?></td>
                                                 <td><?= $gb['id_pembayaran'] ?></td>
-
                                                 <td>Rp. <?= rupiah($gb['jumlah_bayar']) ?></td>
                                                 <td><?= $gb['created_at'] ?></td>
                                                 <td><a class="btn btn-info btn-sm" href="detail_pembayaran.php?id_pembayaran=<?php echo $gb['id_pembayaran'] ?>">Detail</a></td>

@@ -145,14 +145,39 @@ function check_seleksi($id_siswa)
 function get_count_pembayaran($id_siswa)
 {
     global $connect;
-    if ($id_siswa != "all") {
-        $get = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran WHERE id_siswa = '$id_siswa'");
-        $g = mysqli_fetch_assoc($get);
-        return $g;
+    if (!empty($id_siswa['tipe_filter'])) {
+        $tipe_filter = htmlspecialchars($id_siswa['tipe_filter']);
+        if ($tipe_filter == 'Semua') {
+            $get_siswa = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran");
+            $gs = mysqli_fetch_assoc($get_siswa);
+
+            return $gs;
+        } else if ($tipe_filter == 'Tanggal') {
+            $start_date = htmlspecialchars($id_siswa['start_date']);
+            $end_date = htmlspecialchars($id_siswa['end_date']);
+
+            $get_siswa = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran WHERE tanggal_daftar BETWEEN '$start_date' AND '$end_date'");
+            $gs = mysqli_fetch_assoc($get_siswa);
+
+            return $gs;
+        } else if ($tipe_filter == 'Bulan') {
+            $bulan = htmlspecialchars($id_siswa['bulan']);
+
+            $get = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran WHERE DATE_FORMAT(tanggal_daftar, '%Y-%m') = '$bulan'");
+            $gs = mysqli_fetch_assoc($get);
+
+            return $gs;
+        }
     } else {
-        $get = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran");
-        $g = mysqli_fetch_assoc($get);
-        return $g;
+        if ($id_siswa != "all") {
+            $get = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran WHERE id_siswa = '$id_siswa'");
+            $g = mysqli_fetch_assoc($get);
+            return $g;
+        } else {
+            $get = mysqli_query($connect, "SELECT SUM(jumlah_bayar) AS count FROM pembayaran");
+            $g = mysqli_fetch_assoc($get);
+            return $g;
+        }
     }
 }
 
@@ -246,14 +271,63 @@ function save_pembayaran($data, $id_siswa)
     }
 }
 
-function get_count_siswa()
+function get_count_siswa($data)
 {
     global $connect;
 
-    $get_siswa = mysqli_query($connect, "SELECT COUNT(id) as count FROM user_siswa");
-    $gs = mysqli_fetch_assoc($get_siswa);
+    if ($data != null) {
+        $tipe_filter = htmlspecialchars($data['tipe_filter']);
+        if ($tipe_filter == 'Semua') {
+            $get_siswa = mysqli_query($connect, "SELECT COUNT(id) as count FROM user_siswa");
+            $gs = mysqli_fetch_assoc($get_siswa);
 
-    return $gs;
+            return $gs;
+        } else if ($tipe_filter == 'Tanggal') {
+            $start_date = htmlspecialchars($data['start_date']);
+            $end_date = htmlspecialchars($data['end_date']);
+
+            $get_siswa = mysqli_query($connect, "SELECT COUNT(user_siswa.id) as count FROM user_siswa INNER JOIN biodata_siswa ON user_siswa.id_siswa = biodata_siswa.id_siswa WHERE biodata_siswa.tanggal_daftar BETWEEN '$start_date' AND '$end_date'");
+            $gs = mysqli_fetch_assoc($get_siswa);
+
+            return $gs;
+        } else if ($tipe_filter == 'Bulan') {
+            $bulan = htmlspecialchars($data['bulan']);
+
+            $get = mysqli_query($connect, "SELECT COUNT(user_siswa.id) FROM user_siswa INNER JOIN biodata_siswa ON user_siswa.id_siswa = biodata_siswa.id_siswa INNER JOIN seleksi ON user_siswa.id_siswa = seleksi.id_siswa WHERE DATE_FORMAT(biodata_siswa.tanggal_daftar, '%Y-%m') = '$bulan' ");
+            $gs = mysqli_fetch_assoc($get);
+
+            return $gs;
+        }
+    } else {
+        $get_siswa = mysqli_query($connect, "SELECT COUNT(id) as count FROM user_siswa");
+        $gs = mysqli_fetch_assoc($get_siswa);
+
+        return $gs;
+    }
+}
+
+function print_laporan($data)
+{
+    global $connect;
+
+    $tipe_filter = htmlspecialchars($data['tipe_filter']);
+
+    if ($tipe_filter == 'Semua') {
+        $get = mysqli_query($connect, "SELECT * FROM user_siswa INNER JOIN biodata_siswa ON user_siswa.id_siswa = biodata_siswa.id_siswa INNER JOIN seleksi ON user_siswa.id_siswa = seleksi.id_siswa");
+        return $get;
+    } else if ($tipe_filter == 'Tanggal') {
+        $start_date = htmlspecialchars($data['start_date']);
+        $end_date = htmlspecialchars($data['end_date']);
+
+        $get = mysqli_query($connect, "SELECT * FROM user_siswa INNER JOIN biodata_siswa ON user_siswa.id_siswa = biodata_siswa.id_siswa INNER JOIN seleksi ON user_siswa.id_siswa = seleksi.id_siswa WHERE biodata_siswa.tanggal_daftar BETWEEN '$start_date' AND '$end_date'");
+
+        return $get;
+    } else if ($tipe_filter == 'Bulan') {
+        $bulan = htmlspecialchars($data['bulan']);
+
+        $get = mysqli_query($connect, "SELECT * FROM user_siswa INNER JOIN biodata_siswa ON user_siswa.id_siswa = biodata_siswa.id_siswa INNER JOIN seleksi ON user_siswa.id_siswa = seleksi.id_siswa WHERE DATE_FORMAT(biodata_siswa.tanggal_daftar, '%Y-%m') = '$bulan' ");
+        return $get;
+    }
 }
 
 function save_bodata($data, $id_siswa)

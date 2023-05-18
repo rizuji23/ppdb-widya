@@ -4,7 +4,7 @@
             <div class="card-body p-4">
                 <div class="row alig n-items-start">
                     <div class="col-8">
-                        <?php $get_count = get_count_siswa(); ?>
+                        <?php $get_count = get_count_siswa(null); ?>
                         <h5 class="card-title mb-9 fw-semibold">Total Jumlah Calon Siswa</h5>
                         <h4 class="fw-semibold mb-3"><?php echo $get_count['count'] ?> Orang</h4>
 
