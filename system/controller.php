@@ -237,6 +237,262 @@ function get_seleksi_all()
     return $get_all;
 }
 
+function get_petugas_all()
+{
+    global $connect;
+
+    $get_all = mysqli_query($connect, "SELECT * FROM petugas WHERE level_akses != 1");
+    return $get_all;
+}
+
+function get_petugas($id_petugas)
+{
+    global $connect;
+
+    $get_all = mysqli_query($connect, "SELECT * FROM petugas WHERE id_petugas = '$id_petugas'");
+    $ga = mysqli_fetch_assoc($get_all);
+    return $ga;
+}
+
+function get_tentang()
+{
+    global $connect;
+
+    $get = mysqli_query($connect, "SELECT * FROM tentang_sekolah LIMIT 1");
+
+    $check = mysqli_num_rows($get);
+    if ($check != 0) {
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    } else {
+        return ['id_tentang_sekolah' => '', 'alamat_sekolah' => '', 'visi_misi' => ''];
+    }
+}
+
+function get_sejarah()
+{
+    global $connect;
+
+    $get = mysqli_query($connect, "SELECT * FROM sejarah LIMIT 1");
+
+    $check = mysqli_num_rows($get);
+    if ($check != 0) {
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    } else {
+        return ['id_sejarah' => '', 'sejarah' => ''];
+    }
+}
+
+function get_prosedur()
+{
+    global $connect;
+
+    $get = mysqli_query($connect, "SELECT * FROM prosedur_pendaftaran LIMIT 1");
+
+    $check = mysqli_num_rows($get);
+    if ($check != 0) {
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    } else {
+        return ['id_prosedur' => '', 'tahapan_pendaftaran' => ''];
+    }
+}
+
+function update_sejarah($data)
+{
+    global $connect;
+
+    $check = mysqli_query($connect, "SELECT * FROM sejarah");
+    $c = mysqli_num_rows($check);
+    $sejarah = $data['sejarah'];
+    if ($c != 0) {
+        $update = mysqli_query($connect, "UPDATE sejarah SET sejarah = '$sejarah'");
+        if ($update) {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        } else {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        }
+    } else {
+        $id_sejarah = uniqid();
+        $save = mysqli_query($connect, "INSERT INTO sejarah VALUES(NULL, '$id_sejarah', '$sejarah')");
+        if ($save) {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        } else {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        }
+    }
+}
+
+function get_guru($data)
+{
+    global $connect;
+
+    if ($data == 'all') {
+        $get = mysqli_query($connect, "SELECT * FROM pendidik_kependidikan");
+        return $get;
+    } else {
+        $get = mysqli_query($connect, "SELECT * FROM pendidik_kependidikan WHERE id_pendidik = '$data'");
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    }
+}
+
+function update_guru($data, $id)
+{
+    global $connect;
+
+    $nama_guru = htmlspecialchars($data['nama_guru']);
+
+    $update = mysqli_query($connect, "UPDATE pendidik_kependidikan SET nama_guru = '$nama_guru' WHERE id_pendidik = '$id'");
+    if ($update) {
+        redirect_msg("tampilan.php", "Berhasil Diedit");
+    } else {
+        redirect_msg("tampilan.php", "Berhasil Diedit");
+    }
+}
+
+function save_kejuruan($data)
+{
+    global $connect;
+
+    $nama_kejuruan = htmlspecialchars($data['nama_kejuruan']);
+    $id_kejuruan = uniqid();
+    $save = mysqli_query($connect, "INSERT INTO kejuruan VALUES(NULL, '$id_kejuruan', '$nama_kejuruan')");
+    if ($save) {
+        redirect_msg("tampilan.php", "Berhasil Ditambah");
+    } else {
+        redirect_msg("tampilan.php", "Berhasil Ditambah");
+    }
+}
+
+function get_kejuruan($data)
+{
+    global $connect;
+
+    if ($data == 'all') {
+        $get = mysqli_query($connect, "SELECT * FROM kejuruan");
+        return $get;
+    } else {
+        $get = mysqli_query($connect, "SELECT * FROM kejuruan WHERE id_kejuruan = '$data'");
+        $g = mysqli_fetch_assoc($get);
+        return $g;
+    }
+}
+
+function save_kependidikan($data)
+{
+    global $connect;
+
+    $nama_guru = htmlspecialchars($data['nama_guru']);
+    $id_guru = uniqid();
+    $save = mysqli_query($connect, "INSERT INTO pendidik_kependidikan VALUES(NULL, '$id_guru', '$nama_guru')");
+    if ($save) {
+        redirect_msg("tampilan.php", "Berhasil Ditambah");
+    } else {
+        redirect_msg("tampilan.php", "Berhasil Ditambah");
+    }
+}
+
+function update_kejuruan($data, $id)
+{
+    global $connect;
+
+    $nama_kejuruan = htmlspecialchars($data['nama_kejuruan']);
+    $update = mysqli_query($connect, "UPDATE kejuruan SET jurusan_sekolah = '$nama_kejuruan' WHERE id_kejuruan = '$id'");
+    if ($update) {
+        redirect_msg("tampilan.php", "Berhasil diedit");
+    } else {
+        redirect_msg("tampilan.php", "Berhasil diedit");
+    }
+}
+
+function update_prosedur($data)
+{
+    global $connect;
+
+    $check = mysqli_query($connect, "SELECT * FROM prosedur_pendaftaran");
+    $c = mysqli_num_rows($check);
+    $prosedur = $data['prosuder_pendaftaran'];
+    if ($c != 0) {
+        $update = mysqli_query($connect, "UPDATE prosedur_pendaftaran SET tahapan_pendaftaran = '$prosedur'");
+        if ($update) {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        } else {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        }
+    } else {
+        $id_prosedur = uniqid();
+        $save = mysqli_query($connect, "INSERT INTO prosedur_pendaftaran VALUES(NULL, '$id_prosedur', '$prosedur')");
+        if ($save) {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        } else {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        }
+    }
+}
+
+function update_tentang($data)
+{
+    global $connect;
+
+    $check = mysqli_query($connect, "SELECT * FROM tentang_sekolah");
+    $c = mysqli_num_rows($check);
+
+    $alamat_sekolah = htmlspecialchars($data['alamat_sekolah']);
+    $visi_misi = $data['visi_misi'];
+
+    if ($c != 0) {
+        $update = mysqli_query($connect, "UPDATE tentang_sekolah SET alamat_sekolah = '$alamat_sekolah', visi_misi = '$visi_misi'");
+        if ($update) {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        } else {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        }
+    } else {
+        $id_tentang = uniqid();
+        $save = mysqli_query($connect, "INSERT INTO tentang_sekolah VALUES(NULL, '$id_tentang', '$alamat_sekolah', '$visi_misi')");
+        if ($save) {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        } else {
+            redirect_msg("tampilan.php", "Berhasil Diedit");
+        }
+    }
+}
+
+function save_petugas($data)
+{
+    global $connect;
+
+    $nama = htmlspecialchars($data['nama']);
+    $username = htmlspecialchars($data['username']);
+    $password = htmlspecialchars(md5($data['password']));
+    $id_petugas = uniqid();
+
+    $save = mysqli_query($connect, "INSERT INTO petugas VALUES(NULL, '$id_petugas', '$nama', 'Petugas', 2, '$username', '$password')");
+
+    if ($save) {
+        redirect_msg("list_user.php", "Berhasil Disimpan");
+    } else {
+        redirect_msg("tambah_user.php", "Gagal disimpan!");
+    }
+}
+
+function update_petugas($data, $id_petugas)
+{
+    global $connect;
+    $nama = htmlspecialchars($data['nama']);
+    $username = htmlspecialchars($data['username']);
+
+    $update = mysqli_query($connect, "UPDATE petugas SET nama = '$nama', username = '$username' WHERE id_petugas = '$id_petugas'");
+
+    if ($update) {
+        redirect_msg("list_user.php", "Berhasil Diedit");
+    } else {
+        redirect_msg("list_user.php", "Gagal Diedit!");
+    }
+}
+
 function get_siswa_detail($id_siswa)
 {
     global $connect;

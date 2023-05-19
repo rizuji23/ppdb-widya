@@ -45,7 +45,7 @@ if (empty($_SESSION['username'])) {
         } else if ($_SESSION['level'] == 2) {
           include 'petugas/index.php';
         } else if ($_SESSION['level'] == 1) {
-          include 'include/navbar_admin.php';
+          include 'admin/index.php';
         } ?>
       </div>
     </div>
