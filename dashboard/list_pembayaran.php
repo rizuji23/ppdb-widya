@@ -82,6 +82,9 @@ if (empty($_SESSION['username'])) {
                                 } else {
                                     $get_seleksi = get_pembayaran('all');
                                 }
+                                if (isset($_GET['id_pembayaran'])) {
+                                    hapus_pembayaran($_GET['id_pembayaran']);
+                                }
                                 $no = 1;
                                 foreach ($get_seleksi as $gs) {
 
@@ -100,11 +103,12 @@ if (empty($_SESSION['username'])) {
                                         <td><?= $gs['created_at'] ?></td>
                                         <td>
                                             <a class="btn btn-info btn-sm" href="detail_pembayaran.php?id_pembayaran=<?php echo $gs['id_pembayaran'] ?>">Detail</a>
+                                            <a class="btn btn-success btn-sm" href="edit_pembayaran.php?id_pembayaran=<?php echo $gs['id_pembayaran'] ?>">Edit</a>
                                             <?php
 
                                             if ($_SESSION['level'] !== 3) {
                                             ?>
-                                                <button class="btn btn-danger btn-sm">Delete</button>
+                                                <a class="btn btn-danger btn-sm" href="list_pembayaran.php?id_pembayaran=<?php echo $gs['id_pembayaran'] ?>">Delete</a>
                                             <?php
                                             }
                                             ?>

@@ -47,7 +47,7 @@ if (empty($_SESSION['username'])) {
                             </div>
 
                         </div>
-
+                        <a class="btn btn-success btn-sm float-right" href="tambah_siswa.php">Add Siswa</a>
                         <table id="example" class="table table-striped" style="width:100%">
                             <thead>
                                 <tr>
@@ -63,6 +63,9 @@ if (empty($_SESSION['username'])) {
                                 <?php
 
                                 $get_seleksi = get_seleksi_all();
+                                if (isset($_GET['id_siswa'])) {
+                                    hapus_siswa($_GET['id_siswa']);
+                                }
                                 $no = 1;
                                 foreach ($get_seleksi as $gs) {
 
@@ -79,9 +82,9 @@ if (empty($_SESSION['username'])) {
 
                                             if ($_SESSION['level'] !== 3) {
                                             ?>
-                                                <button class="btn btn-success btn-sm">Edit</button>
+                                                <a class="btn btn-success btn-sm" href="edit_siswa.php?id_siswa=<?php echo $gs['id_siswa'] ?>">Edit</a>
 
-                                                <button class="btn btn-danger btn-sm">Delete</button>
+                                                <a class="btn btn-danger btn-sm" href="list_siswa.php?id_siswa=<?php echo $gs['id_siswa'] ?>">Delete</a>
                                             <?php
                                             }
                                             ?>
